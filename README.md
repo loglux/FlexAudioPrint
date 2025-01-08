@@ -69,11 +69,7 @@ By default, FlexAudioPrint uses the **large** model of OpenAI's Whisper for tran
 You can change the model by modifying the code in the script where `large` is specified as the default. Replace `large` with the desired model name from the table above.
 
 ```python
-# Example: Change the model in the script
-import whisper
-
-model_name = "small"  # Replace "small" with any model from the table
-model = whisper.load_model(model_name)
+audio_transcriber = AudioTranscriber('large')
 ```
 
 > **Note:** Larger models require more computational resources (RAM, GPU, etc.). Make sure your system meets the requirements for the selected model.
