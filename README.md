@@ -74,7 +74,7 @@ audio_transcriber = AudioTranscriber('large')
 ```
 
 > **Note:** Larger models require more computational resources (RAM, GPU, etc.). Make sure your system meets the requirements for the selected model.
-![img.png](img.png)
+
 ---
 
 ## Usage
