@@ -13,7 +13,8 @@ A user-friendly audio transcription web application built using **Gradio** and *
 - **Direct Programmatic Usage**: Use `audio_print.py` as a standalone utility to transcribe audio files without the GUI.
 
 ---
-
+![img_1.png](img_1.png)
+---
 ## Requirements
 
 To use the app, ensure the following are installed on your system:
@@ -73,7 +74,7 @@ audio_transcriber = AudioTranscriber('large')
 ```
 
 > **Note:** Larger models require more computational resources (RAM, GPU, etc.). Make sure your system meets the requirements for the selected model.
-
+![img.png](img.png)
 ---
 
 ## Usage
