@@ -21,16 +21,7 @@ def save_text_to_file(text):
     except Exception as e:
         return None  # Return None in case of an error
 
-def _save_text_to_file(text):
-    try:
-        with open("output.txt", "w", encoding="utf-8") as f:
-            f.write(text)
-        return "Text successfully saved in output.txt"
-    except Exception as e:
-        return f"Error while saving: {str(e)}"
-
-
-# Настройка интерфейса
+#  Interface
 with gr.Blocks() as demo:
     gr.Markdown("# Audio Recognition")
 
