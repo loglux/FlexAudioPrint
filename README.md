@@ -50,6 +50,35 @@ pip install -r requirements.txt
   ```
 
 ---
+## Whisper Model
+
+By default, FlexAudioPrint uses the **large** model of OpenAI's Whisper for transcription, as it provides the highest accuracy for most use cases. However, the model can be replaced with other available Whisper models depending on your resource constraints or accuracy needs. The choice of model can significantly impact both performance and accuracy.
+
+### Available Whisper Models
+
+| Model Name   | Parameters | English-only Model | Multilingual Model | Required VRAM | Relative Speed |
+|--------------|------------|--------------------|--------------------|---------------|----------------|
+| `tiny`       | 39M        | `tiny.en`          | `tiny`             | ~1 GB         | ~10x           |
+| `base`       | 74M        | `base.en`          | `base`             | ~1 GB         | ~7x            |
+| `small`      | 244M       | `small.en`         | `small`            | ~2 GB         | ~4x            |
+| `medium`     | 769M       | `medium.en`        | `medium`           | ~5 GB         | ~2x            |
+| `large` (default) | 1550M | N/A                | `large`            | ~10 GB        | ~1x            |
+
+### How to Change the Model
+
+You can change the model by modifying the code in the script where `large` is specified as the default. Replace `large` with the desired model name from the table above.
+
+```python
+# Example: Change the model in the script
+import whisper
+
+model_name = "small"  # Replace "small" with any model from the table
+model = whisper.load_model(model_name)
+```
+
+> **Note:** Larger models require more computational resources (RAM, GPU, etc.). Make sure your system meets the requirements for the selected model.
+
+---
 
 ## Usage
 
