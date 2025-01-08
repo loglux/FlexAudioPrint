@@ -20,8 +20,8 @@ To use the app, ensure the following are installed on your system:
 - **Python 3.10+**
 - **`ffmpeg`** (cross-platform multimedia framework, required for audio processing)
 - Python packages:
-  - **Whisper**
-  - **Gradio**
+  - **openai-whisper**
+  - **gradio**
   - **FFmpeg-python** (optional, if used)
 
 ---
@@ -31,7 +31,7 @@ To use the app, ensure the following are installed on your system:
 ### 1. Clone the Repository
 Clone this repository to your local system:
 ```bash
-git clone https://github.com/Loglux/FlexAudioPrint.git
+git clone https://github.com/loglux/FlexAudioPrint.git
 cd FlexAudioPrint
 ```
 
@@ -73,11 +73,6 @@ python audio_print.py
 ```
 
 Modify the paths in `audio_print.py` (`input_audio` and `output_text_file`) with the file names of your choice for the audio file you'd like to transcribe and the output file to save the transcription.
-
----
-
-## Folder Structure
-Here's how the project is structured:
 
 ---
 
