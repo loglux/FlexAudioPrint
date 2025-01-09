@@ -9,7 +9,7 @@ def transcribe_audio(audio_file):
     try:
         return audio_transcriber.process_audio(audio_file)
     except Exception as e:
-        return f"Ошибка: {str(e)}"
+        return f"Error: {str(e)}"
 
 
 def save_text_to_file(text):
