@@ -23,7 +23,7 @@ To use the app, ensure the following are installed on your system:
 - Python packages:
   - **openai-whisper**
   - **gradio**
-  - **FFmpeg-python** (optional, if used)
+  - **ffmpeg-python** (optional, if used)
 
 ---
 
