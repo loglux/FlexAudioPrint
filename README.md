@@ -24,9 +24,15 @@ To use the app, ensure the following are installed on your system:
   - **openai-whisper**
   - **gradio**
   - **ffmpeg-python** (optional, if used)
-
+  - **torch** (PyTorch) — Make sure to install the version compatible with your CUDA version. 
+    You can check the [official PyTorch compatibility table](https://pytorch.org/get-started/previous-versions/) to find the correct version.
+    Example:
+    ```bash
+     pip install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu121  
+     ```
 ---
 
+---
 ## Installation
 
 ### 1. Clone the Repository
@@ -41,7 +47,6 @@ Install the required Python packages using the `requirements.txt` file:
 ```bash
 pip install -r requirements.txt
 ```
-
 ### 3. Ensure `ffmpeg` is Installed
 - For Windows, download `ffmpeg` from [FFmpeg.org](https://ffmpeg.org/download.html) and add it to your system's PATH.
 - For Linux/MacOS, install via your package manager:
@@ -49,8 +54,14 @@ pip install -r requirements.txt
   sudo apt install ffmpeg   # For Debian/Ubuntu
   brew install ffmpeg       # For Mac using Homebrew
   ```
+### 4. Installing PyTorch with CUDA Support
 
+To enable GPU acceleration for Whisper, you need to install a PyTorch version that supports your CUDA version. Use the following command, replacing `cu118` with your specific CUDA version:
+```bash
+pip install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu118
+```
 ---
+
 ## Whisper Model
 
 By default, FlexAudioPrint uses the **large** model of OpenAI's Whisper for transcription, as it provides the highest accuracy for most use cases. However, the model can be replaced with other available Whisper models depending on your resource constraints or accuracy needs. The choice of model can significantly impact both performance and accuracy.
