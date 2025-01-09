@@ -25,7 +25,7 @@ To use the app, ensure the following are installed on your system:
   - **gradio**
   - **ffmpeg-python** (optional, if used)
   - **torch** (PyTorch) — Make sure to install the version compatible with your CUDA version. 
-    You can check the [official PyTorch compatibility table](https://pytorch.org/get-started/previous-versions/) to find the correct version.
+    You can check the [official PyTorch compatibility table](https://pytorch.org/) to find the correct version.
     Example:
     ```bash
      pip install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu121  
