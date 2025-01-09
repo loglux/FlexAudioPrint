@@ -57,13 +57,14 @@ By default, FlexAudioPrint uses the **large** model of OpenAI's Whisper for tran
 
 ### Available Whisper Models
 
-| Model Name   | Parameters | English-only Model | Multilingual Model | Required VRAM | Relative Speed |
-|--------------|------------|--------------------|--------------------|---------------|----------------|
-| `tiny`       | 39M        | `tiny.en`          | `tiny`             | ~1 GB         | ~10x           |
-| `base`       | 74M        | `base.en`          | `base`             | ~1 GB         | ~7x            |
-| `small`      | 244M       | `small.en`         | `small`            | ~2 GB         | ~4x            |
-| `medium`     | 769M       | `medium.en`        | `medium`           | ~5 GB         | ~2x            |
-| `large` (default) | 1550M | N/A                | `large`            | ~10 GB        | ~1x            |
+| Model Name        | Parameters | English-only Model | Multilingual Model | Required VRAM | Relative Speed |
+|-------------------|------------|--------------------|--------------------|---------------|----------------|
+| `tiny`            | 39M        | `tiny.en`          | `tiny`             | ~1 GB         | ~10x           |
+| `base`            | 74M        | `base.en`          | `base`             | ~1 GB         | ~7x            |
+| `small`           | 244M       | `small.en`         | `small`            | ~2 GB         | ~4x            |
+| `medium`          | 769M       | `medium.en`        | `medium`           | ~5 GB         | ~2x            |
+| `large` (default) | 1550M      | N/A                | `large`            | ~10 GB        | ~1x            |
+| `turbo` | 809M       | N/A                | `turbo`            | ~6 GB         | ~8x            |
 
 ### How to Change the Model
 
