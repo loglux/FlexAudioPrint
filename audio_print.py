@@ -8,20 +8,6 @@ class AudioTranscriber:
         self.model = whisper.load_model(model_name)
         print(f"Model {model_name} loaded successfully.")
 
-    def convert_audio(self, input_path, output_path):
-        """
-        Converts an audio file to the WAV format with parameters of 16kHz sampling rate and mono channel for compatibility with the Whisper model.
-        :param input_path: Path to the input audio file
-        :param output_path: Path to save the converted audio file
-        """
-        print(f"Converting file {input_path} to {output_path}...")
-        subprocess.run([
-            "ffmpeg", "-i", input_path, "-ar", "16000", "-ac", "1", "-y", output_path
-        ], check=True)
-        if not os.path.exists(output_path):
-            raise FileNotFoundError(f"File {output_path} hasn't been created.")
-        print(f"File {output_path} created successfully.")
-
     def transcribe_audio(self, audio_path, initial_prompt=None):
         """
         Transcribes text from an audio file.
