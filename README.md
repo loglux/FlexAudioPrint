@@ -91,7 +91,6 @@ By default, FlexAudioPrint uses the **large** model of OpenAI's Whisper for tran
 
 When the Gradio interface is refreshed, the default model (`turbo`) is reloaded automatically, ensuring consistency across sessions. Users can select other models from the dropdown menu during their session, but these changes will not persist after a refresh.
 
-When using the interface, users can dynamically select any model from the dropdown menu without modifying the code. However, the default model loaded on startup will always be the one set in the `value` parameter.
 ---
 
 ## Usage
