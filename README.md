@@ -11,6 +11,7 @@ A user-friendly audio transcription web application built using **Gradio** and *
 - **Automatic Formatting**: Converts audio to the WAV format (16kHz, mono) for compatibility with the Whisper model.
 - **Accurate Transcription**: Uses OpenAI's **Whisper** model for speech-to-text transcription.
 - **Subtitle Generation**: Create SRT subtitle files directly from the transcription.
+- **Translate Feature**: "Translate" button for translating transcriptions. Available for specific models (`medium`, `large`, `small`, and `base`) and hidden for unsupported models (`tiny` and `turbo`).
 - **Downloadable Results**: Save your transcription and subtitles with a single click.
 - **Intuitive Web UI**: Built using **Gradio** for a smooth and interactive user interface.
 - **Direct Programmatic Usage**: Use `audio_print.py` as a standalone utility to transcribe audio files without the GUI.
@@ -83,44 +84,14 @@ By default, FlexAudioPrint uses the **large** model of OpenAI's Whisper for tran
 
 ### Notes on Model Selection
 - Models like `tiny`, `base`, and `small` can run efficiently on a CPU, making them suitable for systems without a GPU.
-- While the `turbo` model is faster and resource-efficient, I personally prefer the `large` model due to its superior accuracy. I've noticed that the `turbo` model occasionally "swallows" small words.
-
-### How to Change the Model
-
-#### In `audio_print.py` (Script Usage)
-To change the default model when running the script `audio_print.py`, modify the `model_name` argument in the script. Replace the default `large` model with any other available model (`tiny`, `base`, `small`, `medium`, `large`, or `turbo`).
-
-```python
-audio_transcriber = AudioTranscriber('large')
-```
-#### In Gradio Interface
-In the Gradio web interface, the default model is set using the `value` parameter in the `gr.Dropdown` component. By default, this is set to `turbo`, but you can change it to any other model by modifying the following section of the `app.py` code:
-
-```python
-# Initialize processor with default model
-audio_processor = AudioProcessor(default_model='turbo')
-```
-And
-```python
-# Gradio Interface
-with gr.Blocks() as demo:
-    gr.Markdown("# Audio Recognition and Subtitle Generator")
-
-    with gr.Row():
-        with gr.Column(scale=1):
-            model_selector = gr.Dropdown(
-                label="Select Model",
-                choices=["tiny", "base", "small", "medium", "large", "turbo"],
-                value="turbo",  # Default model set here
-                interactive=True
-            )
-```
-To change the default model, simply replace `"turbo"` in the `value` field with your desired model (e.g., `"large"` or `"small"`).
-
-When using the interface, users can dynamically select any model from the dropdown menu without modifying the code. However, the default model loaded on startup will always be the one set in the `value` parameter.
-
+- While the `turbo` model is faster and more resource-efficient, it has a noticeable drawback: it tends to "swallow" small or less distinct words during transcription. This issue is specific to `turbo` and does not occur with other models like `base`, `small`, or `medium`. Even these smaller models often provide more reliable results, making them preferable over `turbo` when accuracy matters. Personally, I prefer the `large` model over `turbo` due to its superior accuracy, despite its higher resource requirements.
 > **Note:** Larger models require more computational resources (RAM, GPU, etc.). Make sure your system meets the requirements for the selected model.
 
+### Default Model on Page Refresh
+
+When the Gradio interface is refreshed, the default model (`turbo`) is reloaded automatically, ensuring consistency across sessions. Users can select other models from the dropdown menu during their session, but these changes will not persist after a refresh.
+
+When using the interface, users can dynamically select any model from the dropdown menu without modifying the code. However, the default model loaded on startup will always be the one set in the `value` parameter.
 ---
 
 ## Usage
@@ -132,6 +103,12 @@ When using the interface, users can dynamically select any model from the dropdo
    ```
 
 2. Open the URL provided by Gradio (e.g., `http://127.0.0.1:7860/`) in your browser and interact with the web interface.
+
+#### Translate Button Visibility
+
+The "Translate" button is dynamically shown or hidden depending on the selected model:
+- **Visible** for: `base`, `small`, `medium`, `large`
+- **Hidden** for: `tiny`, `turbo`
 
 ---
 

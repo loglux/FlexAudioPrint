@@ -8,7 +8,7 @@ class AudioTranscriber:
         self.model = whisper.load_model(model_name)
         print(f"Model {model_name} loaded successfully.")
 
-    def transcribe_audio(self, audio_path, initial_prompt=None):
+    def transcribe_audio(self, audio_path, initial_prompt=None, task="transcribe"):
         """
         Transcribes text from an audio file.
         :param audio_path: Path to the audio file
@@ -16,15 +16,17 @@ class AudioTranscriber:
         """
         print(f"Transcribing text from the file {audio_path}...")
         print(f"initial_prompt: {initial_prompt}...")
-        result = self.model.transcribe(audio_path, initial_prompt=initial_prompt)
+        print(f"task: {task}...")
+        result = self.model.transcribe(audio_path, initial_prompt=initial_prompt, task=task)
         print("Transcription completed.")
+        print(result)
 
         return {
             "text": result["text"],  # Full transcription text
             "segments": result["segments"]  # Segments with timestamps for subtitles
         }
 
-    def process_audio(self, input_path, initial_prompt=None, output_text_path=None):
+    def process_audio(self, input_path, initial_prompt=None, output_text_path=None, task="transcribe"):
         """
         Complete processing cycle for an audio file: transcription.
         :param input_path: Path to the input audio file
@@ -33,7 +35,7 @@ class AudioTranscriber:
         :return: Transcribed text
         """
         # Speech recognition
-        text = self.transcribe_audio(input_path, initial_prompt)
+        text = self.transcribe_audio(input_path, initial_prompt, task=task)
 
         # Save text to a file if a path is specified
         if output_text_path:

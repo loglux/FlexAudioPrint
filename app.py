@@ -14,19 +14,37 @@ class AudioProcessor:
             self.current_model = model_name
         return f"Model set to: {model_name}"
 
+    def reset_model(self):
+        """Reset the model to the default if necessary."""
+        if self.current_model != 'turbo':  # Checking the current model
+            self.audio_transcriber = AudioTranscriber('turbo')
+            self.current_model = 'turbo'
+        return f"Model set to: {self.current_model}"  # Returning the current state
+
     def _get_base_name(self, file_path):
         """Returns the base name of a file without the extension."""
         original_filename = os.path.basename(file_path)
         base_name, _ = os.path.splitext(original_filename)
         return base_name
 
-    def transcribe_audio(self, audio_file, initial_prompt):
+    def _toggle_translate_button(model_name):
+        # Возвращаем обновление компонента с видимостью
+        if model_name in ["medium", "large", "small", "base"]:
+            return gr.update(visible=True)
+        else:
+            return gr.update(visible=False)
+
+    @staticmethod
+    def toggle_translate_button(model_name):
+        return gr.update(visible=model_name in ["medium", "large", "small", "base"])
+
+    def transcribe_audio(self, audio_file, initial_prompt, task="transcribe"):
         try:
             # Extract the original file name and its base name without the extension
             base_name = self._get_base_name(audio_file)
 
             # Transcription of an audio file
-            result = self.audio_transcriber.process_audio(audio_file, initial_prompt)
+            result = self.audio_transcriber.process_audio(audio_file, initial_prompt, task=task)
             transcribed_text = result["text"]
 
             # Path for saving the text file with the original name
@@ -108,9 +126,9 @@ with gr.Blocks() as demo:
             **Do not overload it with unnecessary details.**
 
             - For example, instead of:
-              `"This is a detailed discussion about Kubernetes, Docker, microservices, and CI/CD pipelines."`
+              `This is a detailed discussion about Kubernetes, Docker, microservices, and CI/CD pipelines.`
             - it's better to say:
-              `"Kubernetes, Docker, microservices, CI/CD pipelines."`
+              `Kubernetes, Docker, microservices, CI/CD pipelines`.
             """
         )
 
@@ -120,6 +138,7 @@ with gr.Blocks() as demo:
 
     with gr.Row():
         transcribe_button = gr.Button("Transcribe")
+        translate_button = gr.Button("Translate", visible=False)
 
     with gr.Row():
         text_output = gr.Textbox(label="Recognized Text", lines=5)
@@ -138,9 +157,22 @@ with gr.Blocks() as demo:
         outputs=[model_status]
     )
 
+    set_model_button.click(
+        fn=AudioProcessor.toggle_translate_button,  # Статический метод
+        inputs=[model_selector],
+        outputs=[translate_button]  # Обновляем сам компонент, а не его атрибут
+    )
+
     transcribe_button.click(
         audio_processor.transcribe_audio,
         inputs=[audio_input, initial_prompt],
+        outputs=[text_output, transcription_state, download_text_button]
+    )
+
+    translate_button.click(
+        fn=lambda audio_file, initial_prompt: audio_processor.transcribe_audio(audio_file, initial_prompt,
+                                                                               task='translate'),
+        inputs=[audio_input, initial_prompt],  # Используем initial_prompt
         outputs=[text_output, transcription_state, download_text_button]
     )
 
@@ -150,5 +182,10 @@ with gr.Blocks() as demo:
         outputs=download_srt_button
     )
 
-demo.launch()
+    demo.load(
+        fn=lambda: (audio_processor.reset_model(), "turbo"),
+        inputs=[],
+        outputs=[model_status, model_selector]
+    )
 
+demo.launch()
