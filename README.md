@@ -97,6 +97,11 @@ audio_transcriber = AudioTranscriber('large')
 In the Gradio web interface, the default model is set using the `value` parameter in the `gr.Dropdown` component. By default, this is set to `turbo`, but you can change it to any other model by modifying the following section of the `app.py` code:
 
 ```python
+# Initialize processor with default model
+audio_processor = AudioProcessor(default_model='turbo')
+```
+And
+```python
 # Gradio Interface
 with gr.Blocks() as demo:
     gr.Markdown("# Audio Recognition and Subtitle Generator")
