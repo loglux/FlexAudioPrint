@@ -5,15 +5,19 @@ A user-friendly audio transcription web application built using **Gradio** and *
 ---
 
 ## Features
-- **Audio Upload**: Upload audio files in various formats.
+- **Model Selection**: Choose from a variety of Whisper models based on your performance and accuracy needs.
+- **Hint Support**: Optionally provide context for better transcription accuracy.
+- **Audio Upload**: Supports audio files in various formats.
 - **Automatic Formatting**: Converts audio to the WAV format (16kHz, mono) for compatibility with the Whisper model.
 - **Accurate Transcription**: Uses OpenAI's **Whisper** model for speech-to-text transcription.
-- **Downloadable Results**: Save your transcription as a file and download it with a single click.
+- **Subtitle Generation**: Create SRT subtitle files directly from the transcription.
+- **Downloadable Results**: Save your transcription and subtitles with a single click.
 - **Intuitive Web UI**: Built using **Gradio** for a smooth and interactive user interface.
 - **Direct Programmatic Usage**: Use `audio_print.py` as a standalone utility to transcribe audio files without the GUI.
-
 ---
-![img_1.png](img_1.png)
+
+![img_2.png](img_2.png)
+
 ---
 ## Requirements
 
@@ -77,6 +81,10 @@ By default, FlexAudioPrint uses the **large** model of OpenAI's Whisper for tran
 | `large` (default) | 1550M      | N/A                | `large`            | ~10 GB        | ~1x            |
 | `turbo` | 809M       | N/A                | `turbo`            | ~6 GB         | ~8x            |
 
+### Notes on Model Selection
+- Models like `tiny`, `base`, and `small` can run efficiently on a CPU, making them suitable for systems without a GPU.
+- While the `turbo` model is faster and resource-efficient, I personally prefer the `large` model due to its superior accuracy. I've noticed that the `turbo` model occasionally "swallows" small words.
+
 ### How to Change the Model
 
 You can change the model by modifying the code in the script where `large` is specified as the default. Replace `large` with the desired model name from the table above.
@@ -122,8 +130,8 @@ Users can upload an audio file in the Gradio UI. Supported formats include `.wav
 ### 2. **Audio Conversion**
 The app converts the uploaded audio to a `.wav` file with a 16kHz sampling rate and mono channel for compatibility with **Whisper**.
 
-### 3. **Transcription**
-The `AudioTranscriber` class uses **Whisper**'s speech-to-text model to transcribe the converted audio into text.
+### 3. **Transcription and Subtitle Generation**
+The `AudioTranscriber` class uses **Whisper**'s speech-to-text model to transcribe the audio into text and generates subtitles in SRT format
 
 ### 4. **Output**
 The transcribed text is displayed in the Gradio interface, and the user can save it as a file to download.

@@ -1,48 +1,153 @@
 import gradio as gr
 from audio_print import AudioTranscriber
+import os
 
-# Creating an instance of AudioTranscriber
-audio_transcriber = AudioTranscriber('large')
+class AudioProcessor:
+    def __init__(self, default_model='turbo'):
+        self.audio_transcriber = AudioTranscriber(default_model)
+        self.current_model = default_model
+
+    def set_model(self, model_name):
+        """Set a new model for transcription."""
+        if model_name != self.current_model:
+            self.audio_transcriber = AudioTranscriber(model_name)
+            self.current_model = model_name
+        return f"Model set to: {model_name}"
+
+    def _get_base_name(self, file_path):
+        """Returns the base name of a file without the extension."""
+        original_filename = os.path.basename(file_path)
+        base_name, _ = os.path.splitext(original_filename)
+        return base_name
+
+    def transcribe_audio(self, audio_file, initial_prompt):
+        try:
+            # Extract the original file name and its base name without the extension
+            base_name = self._get_base_name(audio_file)
+
+            # Transcription of an audio file
+            result = self.audio_transcriber.process_audio(audio_file, initial_prompt)
+            transcribed_text = result["text"]
+
+            # Path for saving the text file with the original name
+            text_file_path = f"{base_name}.txt"
+
+            # Save the transcript to a text file
+            with open(text_file_path, mode="w", encoding="utf-8") as text_file:
+                text_file.write(transcribed_text)
+
+            return transcribed_text, result, text_file_path
+        except Exception as e:
+            return f"Error: {str(e)}", None, None
 
 
-def transcribe_audio(audio_file):
-    try:
-        return audio_transcriber.process_audio(audio_file)
-    except Exception as e:
-        return f"Error: {str(e)}"
+    def generate_srt(self, result, audio_file):
+        try:
+            # Extract the base name of the audio file
+            base_name = self._get_base_name(audio_file)
 
+            # Path for saving the SRT file
+            srt_file_path = f"{base_name}.srt"
 
-def save_text_to_file(text):
-    try:
-        file_path = "output.txt"
-        with open(file_path, "w", encoding="utf-8") as f:
-            f.write(text)
-        return file_path  # Return file path for download
-    except Exception as e:
-        return None  # Return None in case of an error
+            # Save segments to an SRT file
+            with open(srt_file_path, mode="w", encoding="utf-8") as srt_file:
+                for i, segment in enumerate(result["segments"]):
+                    start = self.format_time(segment["start"])
+                    end = self.format_time(segment["end"])
+                    text = segment["text"].strip()
+                    srt_file.write(f"{i + 1}\n{start} --> {end}\n{text}\n\n")
 
-#  Interface
+            return srt_file_path
+        except Exception as e:
+            return f"Error: {str(e)}"
+
+    @staticmethod
+    def format_time(seconds):
+        millis = int((seconds % 1) * 1000)
+        seconds = int(seconds)
+        mins, secs = divmod(seconds, 60)
+        hours, mins = divmod(mins, 60)
+        return f"{hours:02}:{mins:02}:{secs:02},{millis:03}"
+
+# Initialize processor with default model
+audio_processor = AudioProcessor(default_model='turbo')
+
+# Gradio Interface
 with gr.Blocks() as demo:
-    gr.Markdown("# Audio Recognition")
+    gr.Markdown("# Audio Recognition and Subtitle Generator")
+
+    with gr.Row():
+        with gr.Column(scale=1):
+            model_selector = gr.Dropdown(
+                label="Select Model",
+                choices=["tiny", "base", "small", "medium", "large", "turbo"],
+                value="turbo",
+                interactive=True
+            )
+
+        with gr.Column(scale=1):
+            model_status = gr.Textbox(
+                label="Current Model",
+                value="Model set to: turbo",
+                interactive=False
+           )
+
+    with gr.Row():
+        with gr.Column(scale=1):
+            set_model_button = gr.Button("Set Model")
 
     with gr.Row():
         audio_input = gr.Audio(type="filepath", label="Upload an audio file")
-    transcribe_button = gr.Button("Transcribe")
+
+    with gr.Row():
+        gr.Markdown(
+            """
+            **What is a Hint (Prompt)?**
+
+            The "Hint" is an optional brief prompt you can provide about the content of the audio file.
+            **Do not overload it with unnecessary details.**
+
+            - For example, instead of:
+              "This is a detailed discussion about Kubernetes, Docker, microservices, and CI/CD pipelines."
+            - it's better to say:
+              "Kubernetes, Docker, microservices, CI/CD pipelines."
+            """
+        )
+
+
+    with gr.Row():
+        initial_prompt = gr.Textbox(label="Hint (Optional) ", placeholder="Hint about the content of the audio file")
+
+    with gr.Row():
+        transcribe_button = gr.Button("Transcribe")
 
     with gr.Row():
         text_output = gr.Textbox(label="Recognized Text", lines=5)
+        download_text_button = gr.File(label="Download Transcribed Text")
 
-    gr.Markdown("### Save the Result (press the Save button to get the file)")
+    gr.Markdown("### Generate Subtitles")
     with gr.Row():
-        with gr.Column():
-            save_button = gr.Button("Save")
-        with gr.Column():
-            download_button = gr.File(label="Download the file")
+        generate_srt_button = gr.Button("Generate SRT")
+        download_srt_button = gr.File(label="Download SRT Subtitles")
 
-    # Button bindings to functions
-    transcribe_button.click(transcribe_audio, inputs=audio_input, outputs=text_output)
-    save_button.click(save_text_to_file, inputs=text_output,
-                      outputs=download_button)  # Save and provide file to download
+    transcription_state = gr.State()
 
-# Launch the application
+    set_model_button.click(
+        fn=audio_processor.set_model,
+        inputs=[model_selector],
+        outputs=[model_status]
+    )
+
+    transcribe_button.click(
+        audio_processor.transcribe_audio,
+        inputs=[audio_input, initial_prompt],
+        outputs=[text_output, transcription_state, download_text_button]
+    )
+
+    generate_srt_button.click(
+        audio_processor.generate_srt,
+        inputs=[transcription_state, audio_input],
+        outputs=download_srt_button
+    )
+
 demo.launch()

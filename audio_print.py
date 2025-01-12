@@ -22,19 +22,23 @@ class AudioTranscriber:
             raise FileNotFoundError(f"File {output_path} hasn't been created.")
         print(f"File {output_path} created successfully.")
 
-    def transcribe_audio(self, audio_path):
+    def transcribe_audio(self, audio_path, initial_prompt=None):
         """
         Transcribes text from an audio file.
         :param audio_path: Path to the audio file
-        :return: Transcribed text
+        :return: Dictionary with transcribed text and segments
         """
         print(f"Transcribing text from the file {audio_path}...")
-        result = self.model.transcribe(audio_path)
+        print(f"initial_prompt: {initial_prompt}...")
+        result = self.model.transcribe(audio_path, initial_prompt=initial_prompt)
         print("Transcription completed.")
 
-        return result["text"]
+        return {
+            "text": result["text"],  # Full transcription text
+            "segments": result["segments"]  # Segments with timestamps for subtitles
+        }
 
-    def process_audio(self, input_path, output_text_path=None):
+    def process_audio(self, input_path, initial_prompt=None, output_text_path=None):
         """
         Complete processing cycle for an audio file: conversion and transcription.
         :param input_path: Path to the input audio file
@@ -47,7 +51,7 @@ class AudioTranscriber:
             self.convert_audio(input_path, temp_path)
 
             # Speech recognition
-            text = self.transcribe_audio(temp_path)
+            text = self.transcribe_audio(temp_path, initial_prompt)
 
             # Save text to a file if a path is specified
             if output_text_path:
@@ -63,7 +67,7 @@ class AudioTranscriber:
 
 if __name__ == "__main__":
     # Path to your audio file
-    input_audio = "rus_test.wav"
+    input_audio = "first.mp3"
 
     # Path for saving the text
     output_text_file = "recognized_text.txt"
@@ -72,8 +76,8 @@ if __name__ == "__main__":
     audio_transcriber = AudioTranscriber('large')
 
     # Recognising the text and saving it to a file
-    result_text = audio_transcriber.process_audio(input_audio, output_text_path=output_text_file)
+    result = audio_transcriber.process_audio(input_audio, output_text_path=output_text_file)
     print("Recognised text:")
-    print(result_text)
+    print(result)
 
 
