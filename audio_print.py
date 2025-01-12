@@ -40,30 +40,21 @@ class AudioTranscriber:
 
     def process_audio(self, input_path, initial_prompt=None, output_text_path=None):
         """
-        Complete processing cycle for an audio file: conversion and transcription.
+        Complete processing cycle for an audio file: transcription.
         :param input_path: Path to the input audio file
+        :param initial_prompt: Optional initial prompt for the transcription
         :param output_text_path: Path to save the transcribed text
         :return: Transcribed text
         """
-        temp_path = "temp_audio.wav"
-        try:
-            # Audio file conversion
-            self.convert_audio(input_path, temp_path)
+        # Speech recognition
+        text = self.transcribe_audio(input_path, initial_prompt)
 
-            # Speech recognition
-            text = self.transcribe_audio(temp_path, initial_prompt)
-
-            # Save text to a file if a path is specified
-            if output_text_path:
-                with open(output_text_path, "w", encoding="utf-8") as f:
-                    f.write(text)
-                print(f"Transcribed text has been saved to the file {output_text_path}")
-            return text
-        finally:
-            # Deleting the temporary file
-            if os.path.exists(temp_path):
-                os.remove(temp_path)
-                print(f"The temporary file {temp_path} has been deleted.")
+        # Save text to a file if a path is specified
+        if output_text_path:
+            with open(output_text_path, "w", encoding="utf-8") as f:
+                f.write(text)
+            print(f"Transcribed text has been saved to the file {output_text_path}")
+        return text
 
 if __name__ == "__main__":
     # Path to your audio file

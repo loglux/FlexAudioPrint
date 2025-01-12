@@ -108,9 +108,9 @@ with gr.Blocks() as demo:
             **Do not overload it with unnecessary details.**
 
             - For example, instead of:
-              "This is a detailed discussion about Kubernetes, Docker, microservices, and CI/CD pipelines."
+              `"This is a detailed discussion about Kubernetes, Docker, microservices, and CI/CD pipelines."`
             - it's better to say:
-              "Kubernetes, Docker, microservices, CI/CD pipelines."
+              `"Kubernetes, Docker, microservices, CI/CD pipelines."`
             """
         )
 
@@ -151,3 +151,4 @@ with gr.Blocks() as demo:
     )
 
 demo.launch()
+
