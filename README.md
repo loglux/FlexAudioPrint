@@ -87,11 +87,32 @@ By default, FlexAudioPrint uses the **large** model of OpenAI's Whisper for tran
 
 ### How to Change the Model
 
-You can change the model by modifying the code in the script where `large` is specified as the default. Replace `large` with the desired model name from the table above.
+#### In `audio_print.py` (Script Usage)
+To change the default model when running the script `audio_print.py`, modify the `model_name` argument in the script. Replace the default `large` model with any other available model (`tiny`, `base`, `small`, `medium`, `large`, or `turbo`).
 
 ```python
 audio_transcriber = AudioTranscriber('large')
 ```
+#### In Gradio Interface
+In the Gradio web interface, the default model is set using the `value` parameter in the `gr.Dropdown` component. By default, this is set to `turbo`, but you can change it to any other model by modifying the following section of the `app.py` code:
+
+```python
+# Gradio Interface
+with gr.Blocks() as demo:
+    gr.Markdown("# Audio Recognition and Subtitle Generator")
+
+    with gr.Row():
+        with gr.Column(scale=1):
+            model_selector = gr.Dropdown(
+                label="Select Model",
+                choices=["tiny", "base", "small", "medium", "large", "turbo"],
+                value="turbo",  # Default model set here
+                interactive=True
+            )
+```
+To change the default model, simply replace `"turbo"` in the `value` field with your desired model (e.g., `"large"` or `"small"`).
+
+When using the interface, users can dynamically select any model from the dropdown menu without modifying the code. However, the default model loaded on startup will always be the one set in the `value` parameter.
 
 > **Note:** Larger models require more computational resources (RAM, GPU, etc.). Make sure your system meets the requirements for the selected model.
 
