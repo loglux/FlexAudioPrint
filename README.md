@@ -15,6 +15,11 @@ A user-friendly audio transcription web application built using **Gradio** and *
 - **Downloadable Results**: Save your transcription and subtitles with a single click.
 - **Intuitive Web UI**: Built using **Gradio** for a smooth and interactive user interface.
 - **Direct Programmatic Usage**: Use `audio_print.py` as a standalone utility to transcribe audio files without the GUI.
+- **Formatted Dialogue Output**: Automatically formats raw transcripts into clean, readable dialogue scripts using a local LLM (`gemma3:12b` via Ollama).
+- **Speaker Labelling**: Adds speaker names and corrects punctuation for better readability.
+- **Narration Styling**: Italicises non-verbal and narrated content (e.g., *[laughter]*, *Narrator: You now have 30 seconds...*).
+- **Local LLM Integration**: Uses Ollama with `gemma3:12b`, no internet or external API needed.
+- **Downloadable Formatted Text**: Easily save the result as a formatted `.txt` file ready for editing, publishing or scripting.
 ---
 
 ![img_2.png](img_2.png)
@@ -28,6 +33,7 @@ To use the app, ensure the following are installed on your system:
 - Python packages:
   - **openai-whisper**
   - **gradio**
+  - **ollama**
   - **ffmpeg-python** (optional, if used)
   - **torch** (PyTorch) — Make sure to install the version compatible with your CUDA version. 
     You can check the [official PyTorch compatibility table](https://pytorch.org/) to find the correct version.

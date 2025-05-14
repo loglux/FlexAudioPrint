@@ -1,11 +1,14 @@
 import gradio as gr
 from audio_print import AudioTranscriber
+from transcript_formatter import TranscriptFormatter
 import os
 
 class AudioProcessor:
     def __init__(self, default_model='turbo'):
         self.audio_transcriber = AudioTranscriber(default_model)
         self.current_model = default_model
+        self.transcript_formatter = TranscriptFormatter()
+        self.last_transcript_path = None
 
     def set_model(self, model_name):
         """Set a new model for transcription."""
@@ -54,6 +57,8 @@ class AudioProcessor:
             with open(text_file_path, mode="w", encoding="utf-8") as text_file:
                 text_file.write(transcribed_text)
 
+            self.last_transcript_path = text_file_path # remember the path
+
             return transcribed_text, result, text_file_path
         except Exception as e:
             return f"Error: {str(e)}", None, None
@@ -86,6 +91,25 @@ class AudioProcessor:
         mins, secs = divmod(seconds, 60)
         hours, mins = divmod(mins, 60)
         return f"{hours:02}:{mins:02}:{secs:02},{millis:03}"
+
+    def format_transcript(self, raw_text):
+        formatted = self.transcript_formatter.format_transcript(raw_text)
+
+        if self.last_transcript_path:
+            base_name, _ = os.path.splitext(self.last_transcript_path)
+            output_path = f"{base_name}_formatted.txt"
+        else:
+            output_path = "formatted_output.txt"
+
+        try:
+            with open(output_path, "w", encoding="utf-8") as f:
+                f.write(formatted)
+        except Exception as e:
+            print(f"Error saving file: {e}")
+            return formatted, None
+
+        return formatted, output_path
+
 
 # Initialize processor with default model
 audio_processor = AudioProcessor(default_model='turbo')
@@ -144,6 +168,13 @@ with gr.Blocks() as demo:
         text_output = gr.Textbox(label="Recognized Text", lines=5)
         download_text_button = gr.File(label="Download Transcribed Text")
 
+    with gr.Row():
+        format_button = gr.Button("Format Transcript")
+
+    with gr.Row():
+        formatted_output = gr.Textbox(label="Formatted Transcript", lines=10)
+        save_formatted_button = gr.File(label="Download Formatted Text")
+
     gr.Markdown("### Generate Subtitles")
     with gr.Row():
         generate_srt_button = gr.Button("Generate SRT")
@@ -182,6 +213,12 @@ with gr.Blocks() as demo:
         outputs=download_srt_button
     )
 
+    format_button.click(
+        fn=audio_processor.format_transcript,
+        inputs=[text_output],
+        outputs=[formatted_output, save_formatted_button]
+    )
+
     demo.load(
         fn=lambda: (audio_processor.reset_model(), "turbo"),
         inputs=[],
@@ -189,3 +226,4 @@ with gr.Blocks() as demo:
     )
 
 demo.launch()
+
