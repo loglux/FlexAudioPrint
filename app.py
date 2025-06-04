@@ -1,7 +1,13 @@
-import gradio as gr
-from audio_print import AudioTranscriber
-from transcript_formatter import TranscriptFormatter
 import os
+from dotenv import load_dotenv
+load_dotenv()
+if os.getenv("USE_REMOTE_API", "false").lower() == "true":
+    from core.audio_print_api import AudioTranscriber
+else:
+    from core.audio_print import AudioTranscriber
+from core.transcript_formatter import TranscriptFormatter
+import gradio as gr
+
 
 class AudioProcessor:
     def __init__(self, default_model='turbo'):
@@ -225,5 +231,5 @@ with gr.Blocks() as demo:
         outputs=[model_status, model_selector]
     )
 
-demo.launch()
-
+if __name__ == "__main__":
+    demo.launch()

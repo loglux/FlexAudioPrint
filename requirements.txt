@@ -1,3 +1,6 @@
 openai-whisper
 gradio
 ollama
+python-dotenv
+fastapi
+uvicorn

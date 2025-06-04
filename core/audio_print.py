@@ -49,7 +49,7 @@ if __name__ == "__main__":
     input_audio = "first.mp3"
 
     # Path for saving the text
-    output_text_file = "recognized_text.txt"
+    output_text_file = "../recognized_text.txt"
 
     # Creating an instance of the class
     audio_transcriber = AudioTranscriber('large')

@@ -2,6 +2,9 @@
 
 A user-friendly audio transcription web application built using **Gradio** and **OpenAI's Whisper** model. This app allows users to upload audio files, transcribe them to text, and even save the output for later use.
 
+> **Note:** This project is being refactored into a modular architecture.
+> You can now run it entirely locally or connect to a remote Whisper API service for transcription, allowing for flexible deployment across multiple machines.
+> In future updates, the server-side components will include FastAPI + Uvicorn support for robust, production-grade hosting (including Docker deployments).
 ---
 
 ## Features
@@ -20,6 +23,8 @@ A user-friendly audio transcription web application built using **Gradio** and *
 - **Narration Styling**: Italicises non-verbal and narrated content (e.g., *[laughter]*, *Narrator: You now have 30 seconds...*).
 - **Local LLM Integration**: Uses Ollama with `gemma3:12b`, no internet or external API needed.
 - **Downloadable Formatted Text**: Easily save the result as a formatted `.txt` file ready for editing, publishing or scripting.
+- **Modular Architecture**: Easily switch between local processing and remote API mode for distributed and scalable deployment.
+- **Production-Ready API (Coming Soon)**: The server component will feature FastAPI + Uvicorn, enabling secure and scalable deployments on dedicated servers or in Docker containers.
 ---
 
 ![img_2.png](img_2.png)
@@ -148,8 +153,9 @@ The transcribed text is displayed in the Gradio interface, and the user can save
 
 ## Example Usage with Code
 If you want to test the transcription programmatically, you can use `audio_print.py`:
+
 ```python
-from audio_print import AudioTranscriber
+from core.audio_print import AudioTranscriber
 
 # Path to your audio file
 input_audio = "example_audio.mp3"
@@ -165,6 +171,42 @@ result = audio_transcriber.process_audio(input_audio, output_text_path=output_te
 
 print("Recognized Text:", result)
 ```
+---
+## Flexible Deployment: Local or Remote API Mode
+
+FlexAudioPrint can run in two different modes, controlled by a single environment variable:
+
+- **Local Mode**: All audio transcription and formatting are performed on the same machine. Ideal for desktop or workstation use.
+- **Remote API Mode**: The app sends audio files to a remote Whisper API service (launched with FastAPI) for transcription. This allows you to run the heavy model on a powerful PC or server, and interact with the app from another machine (e.g., NAS, thin client, Docker container).
+
+Switch between these modes by editing the `.env` file:
+
+```env
+USE_REMOTE_API=true           # Enable remote API mode (set to "false" for local mode)
+REMOTE_API_HOST=192.168.1.100 # IP address of the machine running the Whisper API service
+REMOTE_API_PORT=9911          # Port for the Whisper API service
+
+OLLAMA_MODEL=gemma3:12b
+OLLAMA_BASE_URL=http://192.168.1.100:11434/
+```
+
+Copy `.env.example` to `.env` and edit as needed:
+
+```bash
+cp .env.example .env
+```
+
+**To run the Whisper API service (on your powerful machine with GPU):**
+```bash
+uvicorn whisper_api.api:app --host 0.0.0.0 --port 9911
+```
+
+**To run the client app (on NAS or another computer):**
+```bash
+python app.py
+```
+The app will automatically use the remote API if `USE_REMOTE_API=true` is set in `.env`.
+
 
 ---
 

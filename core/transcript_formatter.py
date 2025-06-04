@@ -3,9 +3,10 @@ from ollama import Client
 import os
 
 class TranscriptFormatter:
-    def __init__(self, model="gemma3:12b", base_url="http://localhost:11434/"):
-        self.model = model
-        self.client = Client(host=base_url)
+    def __init__(self, model=None, base_url=None):
+        self.model = model or os.getenv("OLLAMA_MODEL", "gemma3:12b")
+        self.base_url = base_url or os.getenv("OLLAMA_BASE_URL", "http://localhost:11434/")
+        self.client = Client(host=self.base_url)
 
     def format_transcript(self, raw_text, max_retries=3):
         prompt = f"""You are an assistant that formats raw audio transcripts into clean, readable dialogue scripts.
