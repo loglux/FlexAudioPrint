@@ -2,7 +2,7 @@ import os
 import requests
 
 
-def remote_transcribe(audio_path, initial_prompt, task="transcribe", host="localhost", port=9911):
+def remote_transcribe(audio_path, initial_prompt, model_name="turbo", task="transcribe", host="localhost", port=9911):
     """
     Sends an audio file to a remote Whisper API for transcription.
     :param audio_path: Path to the audio file
@@ -15,14 +15,14 @@ def remote_transcribe(audio_path, initial_prompt, task="transcribe", host="local
     url = f"http://{host}:{port}/transcribe/"
     with open(audio_path, "rb") as f:
         files = {"audio": (os.path.basename(audio_path), f, "audio/mpeg")}
-        data = {"initial_prompt": initial_prompt, "task": task}
+        data = {"initial_prompt": initial_prompt, "task": task, "model_name": model_name}
         response = requests.post(url, files=files, data=data)
     response.raise_for_status()
     return response.json()
 
 
 class AudioTranscriber:
-    def __init__(self, model_name="base", host="localhost", port=9911):
+    def __init__(self, model_name="turbo", host="localhost", port=9911):
         self.model_name = model_name
         self.host = host
         self.port = port
@@ -32,6 +32,7 @@ class AudioTranscriber:
         return remote_transcribe(
             audio_path,
             initial_prompt,
+            self.model_name,
             task,
             host=self.host,
             port=self.port

@@ -47,8 +47,10 @@ class AudioProcessor:
     def toggle_translate_button(model_name):
         return gr.update(visible=model_name in ["medium", "large", "small", "base"])
 
-    def transcribe_audio(self, audio_file, initial_prompt, task="transcribe"):
+    def transcribe_audio(self, audio_file, initial_prompt, model_name, task="transcribe"):
         try:
+            self.set_model(model_name)
+
             # Extract the original file name and its base name without the extension
             base_name = self._get_base_name(audio_file)
 
@@ -202,7 +204,7 @@ with gr.Blocks() as demo:
 
     transcribe_button.click(
         audio_processor.transcribe_audio,
-        inputs=[audio_input, initial_prompt],
+        inputs=[audio_input, initial_prompt, model_selector],
         outputs=[text_output, transcription_state, download_text_button]
     )
 
